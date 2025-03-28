@@ -1,6 +1,5 @@
 {
   pkgs,
-  user,
   ...
 }:
 let
@@ -16,19 +15,17 @@ in
       {
         home.stateVersion = "24.11"; # Please read the comment before changing.
 
-        home.file = { 
-            "./.vimrc".source = ./.vimrc;
-            "./.inputrc".source = ./.inputrc;
-            "./.bash_aliases".source = ./.bash_aliases;
+        home.file = {
+          "./.vimrc".source = ./.vimrc;
+          "./.inputrc".source = ./.inputrc;
+          "./.bash_aliases".source = ./.bash_aliases;
         };
 
         home.sessionVariables = {
           EDITOR = "nvim";
         };
 
-        home.packages =
-          utils.makeScriptsFromDir ./bin
-          ++ import ./packages-home.nix { inherit pkgs; };
+        home.packages = utils.makeScriptsFromDir ./bin ++ import ./packages-home.nix { inherit pkgs; };
 
         programs = {
           home-manager.enable = true;

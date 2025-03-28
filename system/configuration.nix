@@ -1,12 +1,15 @@
-{ config, pkgs, ... }:
+{ pkgs, ... }:
 
 {
-  imports =
-    [ # Include the results of the hardware scan.
-      ./hardware-configuration.nix
-      ./home
-    ];
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
+  imports = [
+    # Include the results of the hardware scan.
+    ./hardware-configuration.nix
+    ./home
+  ];
+  nix.settings.experimental-features = [
+    "nix-command"
+    "flakes"
+  ];
 
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
@@ -47,7 +50,6 @@
   services.xserver.displayManager.gdm.enable = true;
   services.xserver.desktopManager.gnome.enable = true;
 
-
   # Configure keymap in X11
   services.xserver.xkb = {
     layout = "us";
@@ -80,9 +82,10 @@
   users.users.hjackson = {
     isNormalUser = true;
     description = "Hank Jackson";
-    extraGroups = [ "networkmanager" "wheel" "docker" ];
-    packages = with pkgs; [
-    #  thunderbird
+    extraGroups = [
+      "networkmanager"
+      "wheel"
+      "docker"
     ];
   };
 
@@ -104,8 +107,14 @@
   boot.kernel.sysctl."net.ipv4.ip_unprivileged_port_start" = 0;
 
   systemd.services.navidrome-fileshare-app = {
-    requires = [ "docker.service" "network-online.target" ];
-    after = [ "docker.service" "network-online.target" ];
+    requires = [
+      "docker.service"
+      "network-online.target"
+    ];
+    after = [
+      "docker.service"
+      "network-online.target"
+    ];
     wantedBy = [ "multi-user.target" ];
     serviceConfig = {
       Type = "oneshot";
@@ -117,8 +126,8 @@
       ExecStart = "${pkgs.docker}/bin/docker compose up -d";
       ExecStop = "${pkgs.docker}/bin/docker compose down --remove-orphans";
       Restart = "on-failure";
+    };
   };
-};
 
   environment.systemPackages = with pkgs; [
     docker-compose
@@ -148,13 +157,19 @@
   # List services that you want to enable:
 
   # Enable the OpenSSH daemon.
-  services.openssh = { 
+  services.openssh = {
     enable = true;
     settings.PasswordAuthentication = false;
   };
 
   # Open ports in the firewall.
-  networking.firewall.allowedTCPPorts = [ 80 433 22 4533 8081 ];
+  networking.firewall.allowedTCPPorts = [
+    80
+    433
+    22
+    4533
+    8081
+  ];
   # networking.firewall.allowedUDPPorts = [ ... ];
   # Or disable the firewall altogether.
   # networking.firewall.enable = false;
