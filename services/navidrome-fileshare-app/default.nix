@@ -1,4 +1,9 @@
-{ pkgs, config, ... }:
+{
+  pkgs,
+  config,
+  storagePath,
+  ...
+}:
 let
   composeFile = pkgs.writeTextFile {
     name = "compose.yml";
@@ -14,8 +19,8 @@ let
               - ND_MUSICFOLDER=/music
               - ND_DATAFOLDER=/data
             volumes:
-              - /mnt/storage1/navidrome-fileshare-app/music:/music
-              - /mnt/storage1/navidrome-fileshare-app/navidrome-data:/data
+              - ${storagePath}/navidrome-fileshare-app/music:/music
+              - ${storagePath}/navidrome-fileshare-app/navidrome-data:/data
             networks:
               - web
             ports:
@@ -26,8 +31,8 @@ let
             restart: always
             user: 1000:1000
             volumes:
-              - /mnt/storage1/navidrome-fileshare-app/music:/srv
-              - /mnt/storage1/navidrome-fileshare-app/filebrowser-config/database.db:/database.db
+              - ${storagePath}/navidrome-fileshare-app/music:/srv
+              - ${storagePath}/navidrome-fileshare-app/filebrowser-config/database.db:/database.db
             networks:
               - web
             ports:
@@ -66,7 +71,7 @@ in
     ];
     wantedBy = [ "multi-user.target" ];
     script = ''
-      ENV_FILE_TMP=/tmp/cloudflared-tunnel
+      ENV_FILE_TMP=/tmp/navidrome-cloudflared-tunnel-token
       echo -n "TUNNEL_TOKEN=" > $ENV_FILE_TMP && cat ${config.sops.secrets.navidrome-cloudflare-tunnel-token.path} | tr -d '\n' >> $ENV_FILE_TMP
       ${pkgs.docker}/bin/docker compose --env-file $ENV_FILE_TMP -f ${composeFile} up -d;
     '';

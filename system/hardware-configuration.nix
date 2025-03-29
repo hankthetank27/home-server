@@ -5,6 +5,7 @@
   config,
   lib,
   modulesPath,
+  storagePath,
   ...
 }:
 
@@ -40,7 +41,7 @@
     ];
   };
 
-  fileSystems."/mnt/storage1" = {
+  fileSystems.${storagePath} = {
     device = "/dev/sda1";
     fsType = "ext4";
   };

@@ -4,7 +4,7 @@
   imports = [
     ./hardware-configuration.nix
     ./home
-    ../services/navidrome-fileshare-app
+    ../services
     inputs.sops-nix.nixosModules.sops
   ];
 

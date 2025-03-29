@@ -19,10 +19,13 @@
       home-manager,
       ...
     }@inputs:
+    let
+      storagePath = "/mnt/storage1";
+    in
     {
       nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
-        specialArgs = { inherit inputs; };
+        specialArgs = { inherit inputs storagePath; };
         modules = [
           home-manager.nixosModules.home-manager
           ./system/configuration.nix
