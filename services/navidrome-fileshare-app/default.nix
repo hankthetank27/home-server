@@ -74,16 +74,8 @@ in
       User = "hjackson";
       Type = "oneshot";
       RemainAfterExit = true;
-
-      # WorkingDirectory = "/etc/nixos/services/navidrome-fileshare-app";
-      # ExecStartPre = [ "${pkgs.docker}/bin/docker compose down --remove-orphans" ];
-      # ExecStart = "${pkgs.docker}/bin/docker compose up -d";
-      # ExecStop = "${pkgs.docker}/bin/docker compose down --remove-orphans";
-
       ExecStartPre = [ "${pkgs.docker}/bin/docker compose -f ${composeFile} down --remove-orphans" ];
-      # ExecStart = "${pkgs.docker}/bin/docker compose -f ${composeFile} up -d";
       ExecStop = "${pkgs.docker}/bin/docker compose -f ${composeFile} down --remove-orphans";
-
       Restart = "on-failure";
     };
   };
