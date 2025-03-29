@@ -1,4 +1,9 @@
-{ pkgs, inputs, ... }:
+{
+  pkgs,
+  inputs,
+  storagePath,
+  ...
+}:
 
 {
   imports = [
@@ -7,6 +12,11 @@
     ../services
     inputs.sops-nix.nixosModules.sops
   ];
+
+  fileSystems.${storagePath} = {
+    device = "/dev/sda1";
+    fsType = "ext4";
+  };
 
   nix.settings.experimental-features = [
     "nix-command"

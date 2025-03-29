@@ -5,7 +5,6 @@
   config,
   lib,
   modulesPath,
-  storagePath,
   ...
 }:
 
@@ -39,11 +38,6 @@
       "fmask=0077"
       "dmask=0077"
     ];
-  };
-
-  fileSystems.${storagePath} = {
-    device = "/dev/sda1";
-    fsType = "ext4";
   };
 
   swapDevices = [ ];
