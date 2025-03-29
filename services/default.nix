@@ -1,0 +1,4 @@
+{ ... }:
+{
+  imports = [ ./navidrome-fileshare-app ];
+}

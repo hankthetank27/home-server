@@ -1,15 +1,21 @@
-{ pkgs, ... }:
+{ pkgs, inputs, ... }:
 
 {
   imports = [
-    # Include the results of the hardware scan.
     ./hardware-configuration.nix
     ./home
+    ../services/navidrome-fileshare-app
+    inputs.sops-nix.nixosModules.sops
   ];
+
   nix.settings.experimental-features = [
     "nix-command"
     "flakes"
   ];
+
+  sops.defaultSopsFile = ../secrets/secrets.yaml;
+  sops.defaultSopsFormat = "yaml";
+  sops.age.keyFile = "/home/hjackson/.config/sops/age/keys.txt";
 
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
@@ -60,7 +66,7 @@
   services.printing.enable = true;
 
   # Enable sound with pipewire.
-  hardware.pulseaudio.enable = false;
+  services.pulseaudio.enable = false;
   security.rtkit.enable = true;
   services.pipewire = {
     enable = true;
@@ -106,31 +112,8 @@
 
   boot.kernel.sysctl."net.ipv4.ip_unprivileged_port_start" = 0;
 
-  systemd.services.navidrome-fileshare-app = {
-    requires = [
-      "docker.service"
-      "network-online.target"
-    ];
-    after = [
-      "docker.service"
-      "network-online.target"
-    ];
-    wantedBy = [ "multi-user.target" ];
-    serviceConfig = {
-      Type = "oneshot";
-      RemainAfterExit = true;
-      WorkingDirectory = ../services/navidrome-fileshare-app;
-      ExecStartPre = [
-        "${pkgs.docker}/bin/docker compose down"
-      ];
-      ExecStart = "${pkgs.docker}/bin/docker compose up -d";
-      ExecStop = "${pkgs.docker}/bin/docker compose down --remove-orphans";
-      Restart = "on-failure";
-    };
-  };
-
   environment.systemPackages = with pkgs; [
-    docker-compose
+    docker
     htop
     vim
     git
@@ -144,6 +127,7 @@
     unzip
     unrar
     xz
+    sops
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
