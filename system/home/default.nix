@@ -25,7 +25,7 @@ in
           EDITOR = "nvim";
         };
 
-        home.packages = utils.makeScriptsFromDir ./bin ++ import ./packages-home.nix { inherit pkgs; };
+        home.packages = utils.makeScriptsFromDir ./bin ++ import ./packages.nix { inherit pkgs; };
 
         programs = {
           home-manager.enable = true;
@@ -60,7 +60,7 @@ in
             vimAlias = true;
             vimdiffAlias = true;
             withNodeJs = true;
-          } // import ./packages-nvim.nix { inherit pkgs; };
+          } // import ./nvim/packages.nix { inherit pkgs; };
 
           tmux = {
             enable = true;
