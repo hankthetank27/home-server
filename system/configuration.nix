@@ -139,6 +139,13 @@
     xz
     sops
     cloudflared
+    tailscale
+    (beets.override {
+      pluginOverrides = {
+        beatport.enable = true;
+        discogs.enable = true;
+      };
+    })
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
@@ -157,7 +164,6 @@
     settings.PasswordAuthentication = false;
   };
 
-  # Open ports in the firewall.
   networking.firewall.allowedTCPPorts = [
     80
     433
