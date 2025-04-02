@@ -1,20 +1,5 @@
 { pkgs, ... }:
 with pkgs;
-let
-  tabline = pkgs.stdenv.mkDerivation {
-    name = "tabline.vim";
-    src = fetchFromGitHub {
-      owner = "mkitt";
-      repo = "tabline.vim";
-      rev = "69c9698a3240860adaba93615f44778a9ab724b4";
-      sha256 = "1dk796zacs0x9kfr15db9j7034w6fqhng9pr49g1ga4a3hzzqmp7";
-    };
-    installPhase = ''
-      mkdir -p $out/share/vim-plugins/tabline
-      cp -r * $out/share/vim-plugins/tabline
-    '';
-  };
-in
 
 {
   plugins = with pkgs.vimPlugins; [
@@ -58,8 +43,6 @@ in
 
         lualine-nvim
 
-        tabline
-
         tabular
 
         vim-fugitive
@@ -69,8 +52,6 @@ in
         vim-repeat
 
         vim-commentary
-
-        vim-sneak
 
         undotree
 
