@@ -5,7 +5,3 @@ creation_rules:
     key_groups:
     - age:
       - *primary
-  - path_regex: secrets/nixos-hp-elitedesk-ssh.json$
-    key_groups:
-    - age:
-      - *primary
