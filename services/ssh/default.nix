@@ -16,12 +16,8 @@ in
     enable = true;
     tunnels = {
       ${tunnelId} = {
-        warp-routing = true;
         credentialsFile = "${config.sops.secrets.nixos-hp-elitedesk-ssh.path}";
         default = "http_status:404";
-        ingress = {
-
-        };
       };
     };
   };
