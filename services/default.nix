@@ -1,4 +1,7 @@
 { ... }:
 {
-  imports = [ ./navidrome-fileshare-app ];
+  imports = [
+    ./navidrome-fileshare-app
+    ./ssh
+  ];
 }
