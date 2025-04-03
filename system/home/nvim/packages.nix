@@ -18,7 +18,6 @@ with pkgs;
         #lsp
         nvim-lspconfig
         cmp-nvim-lsp
-        fidget-nvim
 
         # conform formatting
         conform-nvim
@@ -31,9 +30,6 @@ with pkgs;
         # grammar config is in  host/*/config/home.nix @ xdg.configFile."nvim/parser"
         nvim-treesitter
 
-        # trouble
-        trouble-nvim
-
         # telescope-nvim
         telescope-fzf-native-nvim
         telescope-nvim
@@ -42,8 +38,6 @@ with pkgs;
         nvim-autopairs # not in use
 
         lualine-nvim
-
-        tabular
 
         vim-fugitive
 
