@@ -13,6 +13,25 @@
     inputs.sops-nix.nixosModules.sops
   ];
 
+  # Prevent system from sleeping on inactivity
+  services.logind = {
+    extraConfig = ''
+      HandleSuspendKey=ignore
+      HandleHibernateKey=ignore
+      IdleAction=ignore
+      IdleActionSec=0
+    '';
+  };
+
+  powerManagement.enable = false;
+
+  systemd.targets = {
+    sleep.enable = false;
+    suspend.enable = false;
+    hibernate.enable = false;
+    hybrid-sleep.enable = false;
+  };
+
   fileSystems.${storagePath} = {
     device = "/dev/sda1";
     fsType = "ext4";
@@ -31,15 +50,10 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
-  networking.hostName = "nixos"; # Define your hostname.
-  # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
-
-  # Configure network proxy if necessary
-  # networking.proxy.default = "http://user:password@proxy:port/";
-  # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
-
   # Enable networking
   networking.networkmanager.enable = true;
+  networking.hostName = "nixos"; # Define your hostname.
+  networking.networkmanager.ethernet.macAddress = "preserve";
 
   # Set your time zone.
   time.timeZone = "America/New_York";
