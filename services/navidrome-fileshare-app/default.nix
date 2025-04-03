@@ -18,6 +18,8 @@ let
             environment:
               - ND_MUSICFOLDER=/music
               - ND_DATAFOLDER=/data
+              - ND_UIWELCOMEMESSAGE=welcome..
+              - ND_UILOGINBACKGROUNDURL=https://i.postimg.cc/ncxpBsSF/linux-bg.jpg
             volumes:
               - ${storagePath}/navidrome-fileshare-app/music:/music
               - ${storagePath}/navidrome-fileshare-app/navidrome-data:/data
