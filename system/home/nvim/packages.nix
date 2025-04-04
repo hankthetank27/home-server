@@ -35,8 +35,6 @@ with pkgs;
         telescope-nvim
         plenary-nvim
 
-        nvim-autopairs # not in use
-
         lualine-nvim
 
         vim-fugitive
