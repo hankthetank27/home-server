@@ -1,5 +1,6 @@
 {
   type,
+  filebrowserSha,
   pkgs,
   ...
 }:
@@ -18,7 +19,7 @@ in
       # using my fork for the time being with bug fix for ignoring "Upload" hook.
       imageName = "hjackson277/filebrowser";
       imageDigest = "sha256:4530adc1e8188716393d839e61d2db6445ec60bf50d3b75d12ead070b28e99b1";
-      sha256 = "sha256-rwfN2vLmo7UYxYxGNWHZQ201lI3yLMPE2zZhBhcFcrQ=";
+      sha256 = filebrowserSha;
       finalImageName = "hjackson277/filebrowser-${type}";
       finalImageTag = "v1.0.0";
     };

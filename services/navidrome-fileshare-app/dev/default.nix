@@ -1,5 +1,6 @@
 {
   type,
+  filebrowserSha,
   pkgs,
   ...
 }:

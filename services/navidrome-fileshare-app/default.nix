@@ -7,11 +7,13 @@
 let
   prod = import ./prod {
     type = "prod";
+    filebrowserSha = "sha256-rwfN2vLmo7UYxYxGNWHZQ201lI3yLMPE2zZhBhcFcrQ=";
     inherit pkgs;
   };
 
   dev = import ./dev {
     type = "dev";
+    filebrowserSha = "sha256-Lrr9towIexbUgaX/ItRAH5Mk8XI3fhjjVyN/egIXWV4=";
     inherit pkgs;
   };
 
