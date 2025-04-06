@@ -5,28 +5,30 @@
   ...
 }:
 let
-  metadataScript = pkgs.writeScriptBin "check-audio-metadata" (
+  checkAudioMetadata = pkgs.writeScriptBin "check-audio-metadata" (
     builtins.readFile ./check-audio-metadata.sh
   );
+
+  convertToFlac = pkgs.writeScriptBin "convert-to-flac" (builtins.readFile ./convert-to-flac.sh);
 
   filebrowserDockerfile = pkgs.dockerTools.buildImage {
     name = "filebrowser-custom";
     tag = "latest";
     fromImage = pkgs.dockerTools.pullImage {
-      imageName = "filebrowser/filebrowser";
-      imageDigest = "sha256:86e8449ff8ff481fa6ca555d9f8ddf9ea887a41483526e889fc9b7d79b15d3a4";
-      sha256 = "sha256-WMziIHY/42WplzrOSjdM5wmH8mjv8CKBXY5p2kfviSE=";
-      finalImageName = "filebrowser/filebrowser";
-      # using old version for the time being as latest has bug which ignores "Upload" hook.
-      finalImageTag = "v2.23.0";
+      # using my fork for the time being with bug fix for ignoring "Upload" hook.
+      imageName = "hjackson277/filebrowser";
+      imageDigest = "sha256:4530adc1e8188716393d839e61d2db6445ec60bf50d3b75d12ead070b28e99b1";
+      sha256 = "sha256-OaYBHgUP5tDeisJTEmTbkmTI20K+ijJRP5ARY2Y1G5k=";
+      finalImageName = "hjackson277/filebrowser";
+      finalImageTag = "v1.0.0";
     };
     copyToRoot = pkgs.buildEnv {
       name = "image-root";
       paths = [
         pkgs.bash
-        pkgs.id3v2
-        pkgs.flac
-        metadataScript
+        pkgs.ffmpeg
+        checkAudioMetadata
+        convertToFlac
       ];
       pathsToLink = [ "/bin" ];
     };
