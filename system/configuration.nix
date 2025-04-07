@@ -184,8 +184,6 @@
     80
     433
     22
-    4533
-    8081
   ];
   # networking.firewall.allowedUDPPorts = [ ... ];
   # Or disable the firewall altogether.
