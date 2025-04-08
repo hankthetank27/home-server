@@ -22,7 +22,7 @@ let
 
   mkService =
     {
-      tokenName,
+      serviceName,
       filebrowserDockerfile,
       composeFile,
     }:
@@ -38,11 +38,18 @@ let
       wantedBy = [ "multi-user.target" ];
       script = ''
         ${pkgs.docker}/bin/docker load < ${filebrowserDockerfile}
-        ENV_FILE_TMP=/tmp/${tokenName}
+
+        ENV_FILE_TMP=/tmp/${serviceName}
+
         echo -n "TUNNEL_TOKEN=" > $ENV_FILE_TMP && cat ${
-          config.sops.secrets.${tokenName}.path
+          config.sops.secrets.${serviceName}.path
         } | tr -d '\n' >> $ENV_FILE_TMP
-        ${pkgs.docker}/bin/docker compose -p ${tokenName} --env-file $ENV_FILE_TMP -f ${composeFile} up -d;
+        echo "" >> $ENV_FILE_TMP
+
+        echo -n "DISCORD_WEBHOOK=" >> $ENV_FILE_TMP && cat ${config.sops.secrets.discord-webhook.path} | tr -d '\n' >> $ENV_FILE_TMP
+        echo "" >> $ENV_FILE_TMP
+
+        ${pkgs.docker}/bin/docker compose -p ${serviceName} --env-file $ENV_FILE_TMP -f ${composeFile} up -d;
       '';
       serviceConfig = {
         User = "hjackson";
@@ -63,14 +70,18 @@ in
     owner = "hjackson";
   };
 
+  sops.secrets.discord-webhook = {
+    owner = "hjackson";
+  };
+
   systemd.services.${prodName} = mkService {
-    tokenName = prodName;
+    serviceName = prodName;
     composeFile = prod.mkComposeFile "${storagePath}/${prodName}";
     filebrowserDockerfile = prod.filebrowserDockerfile;
   };
 
   systemd.services.${devName} = mkService {
-    tokenName = devName;
+    serviceName = devName;
     composeFile = dev.mkComposeFile "${storagePath}/${devName}";
     filebrowserDockerfile = dev.filebrowserDockerfile;
   };

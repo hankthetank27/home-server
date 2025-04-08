@@ -10,6 +10,10 @@ let
   );
 
   convertToFlac = pkgs.writeScriptBin "convert-to-flac" (builtins.readFile ./convert-to-flac.sh);
+
+  postUploadToDisc = pkgs.writeScriptBin "post-upload-to-disc" (
+    builtins.readFile ./post-upload-to-disc.sh
+  );
 in
 {
   filebrowserDockerfile = pkgs.dockerTools.buildImage {
@@ -30,6 +34,7 @@ in
         pkgs.ffmpeg
         checkAudioMetadata
         convertToFlac
+        postUploadToDisc
       ];
       pathsToLink = [ "/bin" ];
     };
@@ -45,7 +50,7 @@ in
   mkComposeFile =
     appStorage:
     pkgs.writeTextFile {
-      name = "compose-${type}.yml";
+      name = "lostless-compose-${type}.yml";
       text =
         #yaml
         ''
@@ -74,6 +79,8 @@ in
               volumes:
                 - ${appStorage}/music:/srv
                 - ${appStorage}/filebrowser-config/database.db:/filebrowser.db
+              environment:
+               - DISCORD_WEBHOOK=''${DISCORD_WEBHOOK}
               networks:
                 - web-${type}
               ports:
