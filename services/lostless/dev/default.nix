@@ -45,7 +45,7 @@ in
   mkComposeFile =
     appStorage:
     pkgs.writeTextFile {
-      name = "navidrone-compose-${type}.yml";
+      name = "navidrome-compose-${type}.yml";
       text =
         #yaml
         ''

@@ -1,6 +1,6 @@
 _: {
   imports = [
-    ./navidrome-fileshare-app
+    ./lostless
     ./tailscale
     ./monitoring
   ];

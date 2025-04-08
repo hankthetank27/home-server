@@ -17,6 +17,9 @@ let
     inherit pkgs;
   };
 
+  prodName = "lostless-prod";
+  devName = "lostless-dev";
+
   mkService =
     {
       tokenName,
@@ -52,23 +55,23 @@ let
     };
 in
 {
-  sops.secrets.navidrome-cloudflare-tunnel-token = {
+  sops.secrets.${prodName} = {
     owner = "hjackson";
   };
 
-  sops.secrets.dev-navidrome-cloudflare-tunnel-token = {
+  sops.secrets.${devName} = {
     owner = "hjackson";
   };
 
-  systemd.services.navidrome-fileshare-app = mkService {
-    tokenName = "navidrome-cloudflare-tunnel-token";
-    composeFile = prod.mkComposeFile "${storagePath}/navidrome-fileshare-app";
+  systemd.services.${prodName} = mkService {
+    tokenName = prodName;
+    composeFile = prod.mkComposeFile "${storagePath}/${prodName}";
     filebrowserDockerfile = prod.filebrowserDockerfile;
   };
 
-  systemd.services.dev-navidrome-fileshare-app = mkService {
-    tokenName = "dev-navidrome-cloudflare-tunnel-token";
-    composeFile = dev.mkComposeFile "${storagePath}/navidrome-fileshare-app-dev";
+  systemd.services.${devName} = mkService {
+    tokenName = devName;
+    composeFile = dev.mkComposeFile "${storagePath}/${devName}";
     filebrowserDockerfile = dev.filebrowserDockerfile;
   };
 }
