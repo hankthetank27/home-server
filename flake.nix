@@ -19,17 +19,24 @@
       home-manager,
       ...
     }@inputs:
-    let
-      storagePath = "/mnt/storage1";
-    in
     {
-      nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
-        system = "x86_64-linux";
-        specialArgs = { inherit inputs storagePath; };
-        modules = [
-          home-manager.nixosModules.home-manager
-          ./system/configuration.nix
-        ];
-      };
+      nixosConfigurations =
+        let
+          host = import ./system/hosts/lostless-prod;
+        in
+        with host;
+        {
+          nixos = nixpkgs.lib.nixosSystem {
+            system = "x86_64-linux";
+            specialArgs = {
+              inherit inputs storagePath;
+            };
+            modules = [
+              home-manager.nixosModules.home-manager
+              ./system/configuration.nix
+              hardwareConfig
+            ];
+          };
+        };
     };
 }

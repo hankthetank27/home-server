@@ -1,12 +1,10 @@
 {
   pkgs,
   inputs,
-  storagePath,
   ...
 }:
 {
   imports = [
-    ./hardware-configuration.nix
     ./home
     ../services
     inputs.sops-nix.nixosModules.sops
@@ -29,11 +27,6 @@
     suspend.enable = false;
     hibernate.enable = false;
     hybrid-sleep.enable = false;
-  };
-
-  fileSystems.${storagePath} = {
-    device = "/dev/sda1";
-    fsType = "ext4";
   };
 
   nix.settings.experimental-features = [
