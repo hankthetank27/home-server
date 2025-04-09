@@ -19,24 +19,33 @@
       home-manager,
       ...
     }@inputs:
-    {
-      nixosConfigurations =
+    let
+      hostNames = builtins.attrNames (builtins.readDir ./system/hosts);
+
+      mkHost =
+        hostName:
         let
-          host = import ./system/hosts/lostless-prod;
+          host = import ./system/hosts/${hostName};
         in
-        with host;
         {
-          nixos = nixpkgs.lib.nixosSystem {
-            system = "x86_64-linux";
-            specialArgs = {
-              inherit inputs storagePath;
-            };
-            modules = [
-              home-manager.nixosModules.home-manager
-              ./system/configuration.nix
-              hardwareConfig
-            ];
-          };
+          name = host.hostName;
+          value = nixpkgs.lib.nixosSystem (
+            with host;
+            {
+              inherit system;
+              specialArgs = {
+                inherit inputs storagePath;
+              };
+              modules = [
+                home-manager.nixosModules.home-manager
+                ./system/configuration.nix
+                hardwareConfig
+              ];
+            }
+          );
         };
+    in
+    {
+      nixosConfigurations = builtins.listToAttrs (map mkHost hostNames);
     };
 }
