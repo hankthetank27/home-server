@@ -1,5 +1,6 @@
 {
   pkgs,
+  userName,
   ...
 }:
 let
@@ -158,7 +159,7 @@ in
       ${pkgs.docker}/bin/docker compose -p grafana-monitoring -f ${composeFile} up -d;
     '';
     serviceConfig = {
-      User = "hjackson";
+      User = userName;
       Type = "oneshot";
       RemainAfterExit = true;
       ExecStartPre = [ "${pkgs.docker}/bin/docker compose -f ${composeFile} down --remove-orphans" ];

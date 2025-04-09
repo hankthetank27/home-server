@@ -1,5 +1,5 @@
 {
-  description = "Homeserver System";
+  description = "lostless.cafe server";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
@@ -34,7 +34,13 @@
             {
               inherit system;
               specialArgs = {
-                inherit inputs storagePath;
+                inherit
+                  inputs
+                  storagePath
+                  sopsAgeKey
+                  userName
+                  userDesc
+                  ;
               };
               modules = [
                 home-manager.nixosModules.home-manager

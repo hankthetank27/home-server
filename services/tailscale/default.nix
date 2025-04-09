@@ -1,4 +1,9 @@
-{ pkgs, config, ... }:
+{
+  pkgs,
+  config,
+  userName,
+  ...
+}:
 {
 
   services.tailscale.enable = true;
@@ -7,7 +12,7 @@
   networking.firewall.allowedUDPPorts = [ config.services.tailscale.port ];
 
   sops.secrets.tailscale-token = {
-    owner = "hjackson";
+    owner = userName;
   };
 
   systemd.services.tailscale-autoconnect = {

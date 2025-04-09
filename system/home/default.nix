@@ -1,5 +1,6 @@
 {
   pkgs,
+  userName,
   ...
 }:
 let
@@ -10,7 +11,7 @@ in
     backupFileExtension = "backup";
     useGlobalPkgs = true;
     useUserPackages = true;
-    users.hjackson =
+    users.${userName} =
       { ... }:
       {
         home.stateVersion = "24.11"; # Please read the comment before changing.
@@ -40,18 +41,7 @@ in
                     PATH="$HOME/.local/bin:$PATH"
                 fi
               '';
-            bashrcExtra =
-              builtins.readFile ./.bashrc
-              +
-                # bash
-                ''
-                  #annoying windows bell sound disable
-                  bind 'set bell-style none'
-                  # gui
-                  if command -v ip &> /dev/null; then
-                      export DISPLAY=$(ip route | awk '{print $3; exit}'):0
-                  fi
-                '';
+            bashrcExtra = builtins.readFile ./.bashrc;
           };
 
           neovim = {

@@ -2,6 +2,7 @@
   pkgs,
   config,
   storagePath,
+  userName,
   ...
 }:
 let
@@ -52,7 +53,7 @@ let
         ${pkgs.docker}/bin/docker compose -p ${serviceName} --env-file $ENV_FILE_TMP -f ${composeFile} up -d;
       '';
       serviceConfig = {
-        User = "hjackson";
+        User = userName;
         Type = "oneshot";
         RemainAfterExit = true;
         ExecStartPre = [ "${pkgs.docker}/bin/docker compose -f ${composeFile} down --remove-orphans" ];
@@ -63,15 +64,15 @@ let
 in
 {
   sops.secrets.${prodName} = {
-    owner = "hjackson";
+    owner = userName;
   };
 
   sops.secrets.${devName} = {
-    owner = "hjackson";
+    owner = userName;
   };
 
   sops.secrets.discord-webhook = {
-    owner = "hjackson";
+    owner = userName;
   };
 
   systemd.services.${prodName} = mkService {

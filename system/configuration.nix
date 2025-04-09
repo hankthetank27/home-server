@@ -1,6 +1,9 @@
 {
   pkgs,
   inputs,
+  sopsAgeKey,
+  userName,
+  userDesc,
   ...
 }:
 {
@@ -36,7 +39,7 @@
 
   sops.defaultSopsFile = ../secrets/secrets.yaml;
   sops.defaultSopsFormat = "yaml";
-  sops.age.keyFile = "/home/hjackson/.config/sops/age/keys.txt";
+  sops.age.keyFile = sopsAgeKey;
 
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
@@ -101,9 +104,9 @@
   # services.xserver.libinput.enable = true;
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
-  users.users.hjackson = {
+  users.users.${userName} = {
     isNormalUser = true;
-    description = "Hank Jackson";
+    description = userDesc;
     extraGroups = [
       "networkmanager"
       "wheel"
