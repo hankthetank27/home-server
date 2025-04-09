@@ -5,15 +5,7 @@
   ...
 }:
 let
-  checkAudioMetadata = pkgs.writeScriptBin "check-audio-metadata" (
-    builtins.readFile ./check-audio-metadata.sh
-  );
-
-  convertToFlac = pkgs.writeScriptBin "convert-to-flac" (builtins.readFile ./convert-to-flac.sh);
-
-  postUploadToDisc = pkgs.writeScriptBin "post-upload-to-disc" (
-    builtins.readFile ./post-upload-to-disc.sh
-  );
+  utils = import ../../../utils/default.nix { inherit pkgs; };
 in
 {
   filebrowserDockerfile = pkgs.dockerTools.buildImage {
@@ -32,10 +24,7 @@ in
       paths = [
         pkgs.bash
         pkgs.ffmpeg
-        checkAudioMetadata
-        convertToFlac
-        postUploadToDisc
-      ];
+      ] ++ utils.makeScriptsFromDir ./bin;
       pathsToLink = [ "/bin" ];
     };
     config = {

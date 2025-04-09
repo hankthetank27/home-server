@@ -4,7 +4,7 @@
   ...
 }:
 let
-  utils = import ../utils { inherit pkgs; };
+  utils = import ../../utils { inherit pkgs; };
 in
 {
   home-manager = {
