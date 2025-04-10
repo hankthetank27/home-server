@@ -76,8 +76,13 @@
         initService =
           # bash
           ''
-            if [ ! -d "./dev-storage" ]; then
-                mkdir -p "./dev-storage"
+            if [ ! -d "./dev-storage/filebrowser-config" ]; then
+                mkdir -p "./dev-storage/filebrowser-config"
+                echo "Created /dev-storage..."
+            fi
+            if [ ! -f "./dev-storage/filebrowser-config/database.db" ]; then
+                install -m 777 /dev/null "./dev-storage/filebrowser-config/database.db"
+                echo "Created filebrowser.db..."
             fi
             ${pkgs.docker}/bin/docker load < ${lostless.filebrowserDockerfile}
             cat ${composeFile} > compose.yml
