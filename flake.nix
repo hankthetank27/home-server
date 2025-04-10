@@ -105,7 +105,7 @@
                   #bash
                   ''
                     ${pkgs.docker}/bin/docker compose down
-                    ${pkgs.docker}/bin/docker compose -p lostess up
+                    ${pkgs.docker}/bin/docker compose -p lostless up
                   ''
               )
             }/bin/start-lostless";
