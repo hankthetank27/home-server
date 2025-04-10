@@ -134,31 +134,7 @@
   # Enable !#/bin/bash
   services.envfs.enable = true;
 
-  environment.systemPackages = with pkgs; [
-    docker
-    htop
-    vim
-    git
-    wget
-    coreutils
-    ffmpeg
-    ripgrep
-    jq
-    wget
-    curl
-    unzip
-    unrar
-    xz
-    sops
-    cloudflared
-    tailscale
-    (beets.override {
-      pluginOverrides = {
-        beatport.enable = true;
-        discogs.enable = true;
-      };
-    })
-  ];
+  environment.systemPackages = import ./packages.nix { inherit pkgs; };
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.

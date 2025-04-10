@@ -15,6 +15,7 @@ let
   dev = import ./dev {
     type = "dev";
     filebrowserSha = "sha256-Lrr9towIexbUgaX/ItRAH5Mk8XI3fhjjVyN/egIXWV4=";
+    withCloudflared = false;
     inherit pkgs;
   };
 

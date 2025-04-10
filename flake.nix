@@ -50,8 +50,82 @@
             }
           );
         };
+
+      devSystems = [
+        "aarch64-darwin"
+        "x86_64-darwin"
+        "x86_64-linux"
+        "aarch64-linux"
+      ];
+
+      makeDevEnv = system: rec {
+        pkgs = import nixpkgs {
+          config.allowUnfree = true;
+          inherit system;
+        };
+
+        lostless = import ./services/lostless/dev {
+          type = "dev";
+          filebrowserSha = "sha256-Lrr9towIexbUgaX/ItRAH5Mk8XI3fhjjVyN/egIXWV4=";
+          withCloudflared = false;
+          inherit pkgs;
+        };
+
+        composeFile = lostless.mkComposeFile "./dev-storage";
+
+        initService =
+          # bash
+          ''
+            if [ ! -d "./dev-storage" ]; then
+                mkdir -p "./dev-storage"
+            fi
+            ${pkgs.docker}/bin/docker load < ${lostless.filebrowserDockerfile}
+            cat ${composeFile} > compose.yml
+          '';
+      };
+
     in
+
     {
       nixosConfigurations = builtins.listToAttrs (map mkHost hostNames);
+
+      apps = nixpkgs.lib.genAttrs devSystems (
+        system:
+        let
+          devEnv = makeDevEnv system;
+        in
+        with devEnv;
+        {
+          default = {
+            type = "app";
+            program = "${
+              pkgs.writeShellScriptBin "start-lostless" (
+                initService
+                +
+                  #bash
+                  ''
+                    ${pkgs.docker}/bin/docker compose down
+                    ${pkgs.docker}/bin/docker compose -p lostess up
+                  ''
+              )
+            }/bin/start-lostless";
+          };
+        }
+      );
+
+      devShells = nixpkgs.lib.genAttrs devSystems (
+        system:
+        let
+          devEnv = makeDevEnv system;
+        in
+        with devEnv;
+        {
+          default = pkgs.mkShell {
+            packages = import ./system/packages.nix { inherit pkgs; };
+            shellHook = initService;
+          };
+        }
+      );
     };
+
 }

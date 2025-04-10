@@ -1,13 +1,14 @@
 {
   type,
   filebrowserSha,
+  withCloudflared,
   pkgs,
   ...
 }:
 let
   utils = import ../../../utils/default.nix { inherit pkgs; };
 in
-{
+rec {
   filebrowserDockerfile = pkgs.dockerTools.buildImage {
     name = "filebrowser-custom-${type}";
     tag = "latest";
@@ -36,6 +37,24 @@ in
     };
   };
 
+  cloudflared =
+    # extra indent need below for correct string formatting
+    # yaml
+    ''
+      cloudflared-tunnel:
+          image: cloudflare/cloudflared:latest
+          container_name: cloudflared-tunnel-${type}
+          restart: unless-stopped
+          environment:
+           - TUNNEL_TOKEN=''${TUNNEL_TOKEN}
+          command: tunnel run
+          networks:
+            - web-${type}
+          depends_on:
+           - navidrome
+           - filebrowser
+    '';
+
   mkComposeFile =
     appStorage:
     pkgs.writeTextFile {
@@ -44,6 +63,7 @@ in
         #yaml
         ''
           services:
+            ${if withCloudflared then cloudflared else ""}
             navidrome:
               image: deluan/navidrome:latest
               container_name: navidrome-${type}
@@ -74,18 +94,6 @@ in
                 - web-${type}
               ports:
                 - ${if type == "prod" then "8081" else "8082"}:80
-            cloudflared-tunnel:
-              image: cloudflare/cloudflared:latest
-              container_name: cloudflared-tunnel-${type}
-              restart: unless-stopped
-              environment:
-               - TUNNEL_TOKEN=''${TUNNEL_TOKEN}
-              command: tunnel run
-              networks:
-                - web-${type}
-              depends_on:
-               - navidrome
-               - filebrowser
           networks:
             web-${type}:
               external: false
