@@ -38,7 +38,7 @@ rec {
   };
 
   cloudflared =
-    # extra indent need below for correct string formatting
+    # extra indent needed below for correct string formatting
     # yaml
     ''
       cloudflared-tunnel:
