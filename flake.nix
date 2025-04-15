@@ -19,6 +19,7 @@
       home-manager,
       ...
     }@inputs:
+
     let
       hostNames = builtins.attrNames (builtins.readDir ./system/hosts);
 
@@ -80,8 +81,12 @@
                 mkdir -p "./dev-storage/filebrowser-config"
                 echo "Created /dev-storage..."
             fi
+            if [ ! -d "./dev-storage/music" ]; then
+                mkdir -p "./dev-storage/music"
+                echo "Created /music..."
+            fi
             if [ ! -f "./dev-storage/filebrowser-config/database.db" ]; then
-                install -m 777 /dev/null "./dev-storage/filebrowser-config/database.db"
+                install -m 755 /dev/null "./dev-storage/filebrowser-config/database.db"
                 echo "Created filebrowser.db..."
             fi
             ${pkgs.docker}/bin/docker load < ${lostless.filebrowserDockerfile}
@@ -132,5 +137,4 @@
         }
       );
     };
-
 }

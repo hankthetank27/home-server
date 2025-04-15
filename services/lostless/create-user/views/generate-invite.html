@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/css/styles.css">
+  <title>lostless.cafe invite generator</title>
+</head>
+<body>
+  <div class="container">
+    <h2 style="text-align: center;">Invite generator</h2>
+    
+    <form id="inviteForm">
+      <div class="form-group">
+        <label for="email">Recipient Email</label>
+        <input type="email" id="email" name="email" required>
+      </div>
+      
+      <div class="form-group">
+        <label for="password">Admin Password</label>
+        <input type="password" id="password" name="password" required>
+      </div>
+      
+      <button type="submit">Send Invitation</button>
+    </form>
+    
+    <div id="successMessage" class="message success">
+      Invitation sent successfully!
+    </div>
+    
+    <div id="errorMessage" class="message error">
+      Error sending invitation.
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('inviteForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      
+      const successMessage = document.getElementById('successMessage');
+      const errorMessage = document.getElementById('errorMessage');
+      
+      successMessage.style.display = 'none';
+      errorMessage.style.display = 'none';
+      
+      try {
+        const response = await fetch('/api/generate-invite', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ email, password })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success === 'complete') {
+          successMessage.style.display = 'block';
+          document.getElementById('inviteForm').reset();
+        } else {
+          errorMessage.textContent = data.message || 'Error sending invitation.';
+          errorMessage.style.display = 'block';
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        errorMessage.textContent = 'An unexpected error occurred. Please try again.';
+        errorMessage.style.display = 'block';
+      }
+    });
+  </script>
+</body>
+</html>

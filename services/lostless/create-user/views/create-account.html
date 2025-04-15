@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/css/styles.css">
+  <title>lostless.cafe signup</title>
+</head>
+<body>
+  <div class="container">
+    <div id="loading" class="loading">
+      <div class="loading-spinner"></div>
+      <p>Validating invitation...</p>
+    </div>
+
+    <div id="invalidInvite" class="invalid-invite">
+      <h2>Invalid Invitation</h2>
+      <p id="invalidMessage">This invitation link is invalid or has already been used.</p>
+    </div>
+    
+    <div id="accountForm" style="display: none;">
+      <h2 style="text-align: center;">Welcome to lostless.cafe!</h2>
+      <p style="text-align: center;">Create your account..</p>
+      
+      <form id="createAccount">
+        <div class="form-group">
+          <label for="username">Username</label>
+          <input type="text" id="username" name="username" required minlength="3">
+          <p id="usernameError" class="error">Username must be at least 3 characters long</p>
+        </div>
+        
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" name="password" required minlength="8">
+          <p id="passwordError" class="error">Password must be at least 8 characters long</p>
+        </div>
+        
+        <div class="form-group">
+          <label for="confirmPassword">Confirm Password</label>
+          <input type="password" id="confirmPassword" name="confirmPassword" required>
+          <p id="confirmPasswordError" class="error">Passwords do not match</p>
+        </div>
+        
+        <input type="hidden" id="inviteToken" name="token">
+        
+        <button type="submit">Create Account</button>
+      </form>
+      
+      <div id="result" class="result"></div>
+    </div>
+  </div>
+
+  <script>
+    const path = window.location.pathname;
+    const token = path.split('/invite/')[1];
+    
+    const loadingElement = document.getElementById('loading');
+    const invalidInviteElement = document.getElementById('invalidInvite');
+    const accountFormElement = document.getElementById('accountForm');
+    const invalidMessageElement = document.getElementById('invalidMessage');
+    const tokenInput = document.getElementById('inviteToken');
+    
+    const form = document.getElementById('createAccount');
+    const username = document.getElementById('username');
+    const password = document.getElementById('password');
+    const confirmPassword = document.getElementById('confirmPassword');
+    const usernameError = document.getElementById('usernameError');
+    const passwordError = document.getElementById('passwordError');
+    const confirmPasswordError = document.getElementById('confirmPasswordError');
+    const resultElement = document.getElementById('result');
+    
+    async function validateInvite() {
+      loadingElement.style.display = 'block';
+      
+      try {
+        const response = await fetch(`/api/validate-invite/${token}`);
+        const data = await response.json();
+        
+        if (data.success) {
+          tokenInput.value = token;
+          loadingElement.style.display = 'none';
+          accountFormElement.style.display = 'block';
+        } else {
+          loadingElement.style.display = 'none';
+          invalidMessageElement.textContent = data.message;
+          invalidInviteElement.style.display = 'block';
+        }
+      } catch (error) {
+        console.error('Error validating invite:', error);
+        loadingElement.style.display = 'none';
+        invalidMessageElement.textContent = 'An error occurred while validating your invitation.';
+        invalidInviteElement.style.display = 'block';
+      }
+    }
+    
+    validateInvite();
+    
+    username.addEventListener('input', () => {
+      if (username.validity.valid) {
+        usernameError.style.display = 'none';
+      } else {
+        usernameError.style.display = 'block';
+      }
+    });
+    
+    password.addEventListener('input', () => {
+      if (password.validity.valid) {
+        passwordError.style.display = 'none';
+      } else {
+        passwordError.style.display = 'block';
+      }
+      
+      if (confirmPassword.value && password.value !== confirmPassword.value) {
+        confirmPasswordError.style.display = 'block';
+      } else {
+        confirmPasswordError.style.display = 'none';
+      }
+    });
+    
+    confirmPassword.addEventListener('input', () => {
+      if (password.value === confirmPassword.value) {
+        confirmPasswordError.style.display = 'none';
+      } else {
+        confirmPasswordError.style.display = 'block';
+      }
+    });
+    
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      let isValid = true;
+      
+      if (!username.validity.valid) {
+        usernameError.style.display = 'block';
+        isValid = false;
+      }
+      
+      if (!password.validity.valid) {
+        passwordError.style.display = 'block';
+        isValid = false;
+      }
+      
+      if (password.value !== confirmPassword.value) {
+        confirmPasswordError.style.display = 'block';
+        isValid = false;
+      }
+      
+      if (!isValid) {
+        return;
+      }
+      
+      try {
+        const response = await fetch('/api/create-account', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ 
+            username: username.value, 
+            password: password.value,
+            token: token
+          })
+        });
+        
+        const data = await response.json();
+        
+        resultElement.className = 'result';
+        
+        if (data.success === "complete") {
+          resultElement.innerHTML = `<div>Account created successfully!<br/><br/>Please check your email for more information.<br/><br/>You can also login at <a href="https://lostless.cafe">lostless.cafe</a></div>`;
+          resultElement.classList.add('success');
+        } else if (data.success === "partial") {
+          resultElement.textContent = "Account partially created. If you have trouble logging in try and recreate your account or reach out to an admin for help.";
+          resultElement.classList.add('success');
+        } else {
+          resultElement.textContent = `Error: ${data.message}`;
+          resultElement.classList.add('error-message');
+        }
+
+        resultElement.style.display = 'block';
+        
+        if (data.success === "complete" || data.success === "partial") {
+          form.reset();
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        resultElement.textContent = "An unexpected error occurred. Please try again.";
+        resultElement.className = 'result error-message';
+        resultElement.style.display = 'block';
+      }
+    });
+  </script>
+</body>
+</html>
