@@ -16,8 +16,8 @@ export async function createServerInvite(channelId, botToken) {
     
     console.log(`Creating invite via channel: ${channel.name}`);
     const invite = await channel.createInvite({
-      maxAge: 0,
-      maxUses: 1,
+      maxAge: 604800,
+      maxUses: 3,
       unique: true
     });
     
