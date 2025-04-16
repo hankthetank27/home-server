@@ -109,6 +109,8 @@ rec {
                 - INVITE_GEN_PW=''${INVITE_GEN_PW}
                 - ADMIN_PW=''${ADMIN_PW}
                 - ADMIN_UN=''${ADMIN_UN}
+                - DISCORD_INVITE_BOT_TOKEN=''${DISCORD_INVITE_BOT_TOKEN}
+                - DISCORD_CHANNEL_ID=''${DISCORD_CHANNEL_ID}
               ports:
                 - ${if type == "prod" then "3002" else "3001"}:3000
               volumes:

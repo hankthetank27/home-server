@@ -70,7 +70,9 @@ let
         echo "" >> $ENV_FILE_TMP
         echo -n "EMAIL_APP_PASSWORD=" >> $ENV_FILE_TMP && cat ${config.sops.secrets.email-app-password.path} | tr -d '\n' >> $ENV_FILE_TMP
         echo "" >> $ENV_FILE_TMP
-        echo -n "DISCORD_INVITE=" >> $ENV_FILE_TMP && cat ${config.sops.secrets.discord-invite.path} | tr -d '\n' >> $ENV_FILE_TMP
+        echo -n "DISCORD_INVITE_BOT_TOKEN=" >> $ENV_FILE_TMP && cat ${config.sops.secrets.discord-invite-bot-token.path} | tr -d '\n' >> $ENV_FILE_TMP
+        echo "" >> $ENV_FILE_TMP
+        echo -n "DISCORD_CHANNEL_ID=" >> $ENV_FILE_TMP && cat ${config.sops.secrets.discord-channel-id.path} | tr -d '\n' >> $ENV_FILE_TMP
         echo "" >> $ENV_FILE_TMP
 
         ${pkgs.docker}/bin/docker compose -p lostless-${serviceType} --env-file $ENV_FILE_TMP -f ${composeFile} up -d;
@@ -110,9 +112,6 @@ in
   sops.secrets.email-app-password = {
     owner = userName;
   };
-  sops.secrets.discord-invite = {
-    owner = userName;
-  };
   sops.secrets.navidrome-host-dev = {
     owner = userName;
   };
@@ -129,6 +128,12 @@ in
     owner = userName;
   };
   sops.secrets.app-url-prod = {
+    owner = userName;
+  };
+  sops.secrets.discord-invite-bot-token = {
+    owner = userName;
+  };
+  sops.secrets.discord-channel-id = {
     owner = userName;
   };
 
