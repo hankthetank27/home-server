@@ -74,6 +74,7 @@ rec {
                 - ND_DATAFOLDER=/data
                 - ND_UIWELCOMEMESSAGE=welcome..
                 - ND_UILOGINBACKGROUNDURL=https://i.postimg.cc/ncxpBsSF/linux-bg.jpg
+                - ND_DEFAULTTHEME=Nuclear
               volumes:
                 - ${appStorage}/music:/music
                 - ${appStorage}/navidrome-data:/data
