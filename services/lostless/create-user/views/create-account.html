@@ -171,9 +171,7 @@
         if (data.success === "complete") {
           resultElement.innerHTML = `<div>Account created successfully!<br/><br/>Please check your email for more information.<br/><br/>Redirecting to <a href="https://lostless.cafe">lostless.cafe</a>...</div>`;
           resultElement.classList.add('success');
-          setTimeout(() => {
-            window.location.href = data.url;
-          }, 1500);
+          window.location.href = `${data.url}/welcome/${data.discInvite}`;
         } else if (data.success === "partial") {
           resultElement.textContent = "Account partially created. If you have trouble logging in try and recreate your account or reach out to an admin for help.";
           resultElement.classList.add('success');

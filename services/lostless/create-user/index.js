@@ -24,6 +24,10 @@ app.get('/generate', (_req, res) => {
   res.sendFile(path.join(__dirname, 'views', 'generate-invite.html'));
 });
 
+app.get('/welcome/:discInvite', (_req, res) => {
+  res.sendFile(path.join(__dirname, 'views', 'welcome.html'));
+});
+
 app.get('/invite/:token', (_req, res) => {
   res.sendFile(path.join(__dirname, 'views', 'create-account.html'));
 });

@@ -3,13 +3,18 @@ body {
   margin: 0;
   padding: 0;
   display: flex;
+  height: 100vh;
   justify-content: center;
   align-items: flex-start;
-  height: 100vh;
   background-size: cover;
   background-image: url("/main-bg.jpg");
   background-repeat: no-repeat;
   background-position: center;
+  background-attachment: fixed;
+}
+
+.body-container {
+
 }
 
 .container {
@@ -21,6 +26,40 @@ body {
   width: 100%;
   max-width: 300px;
   position: relative;
+}
+
+.center {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.center-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+.container-welcome h3, .container-welcome h4 {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.container-welcome {
+  margin-top: 20px;
+  margin-bottom: 20px;
+  background-color: rgba(255, 255, 255, 0.85);
+  padding: 2rem;
+  border-radius: 5px;
+  padding-bottom: 30px;
+  width: 70vw;
+  max-width: 800px;
+}
+
+.large {
+  font-size: 30px;
 }
 
 h2 {

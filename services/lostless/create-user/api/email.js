@@ -40,7 +40,7 @@ export async function sendInviteEmail(email, token) {
   }
 }
 
-export async function sendWelcomeEmail(email) {
+export async function sendWelcomeEmail(email, discordInvite) {
   const transporter = createTransporter();
   const mailOptions = {
     from: process.env.EMAIL_USER,
@@ -52,7 +52,7 @@ export async function sendWelcomeEmail(email) {
         <p>lostless.cafe is a small, privately hosted music streaming and file sharing network for some friends to share cool music they like and have an easy way to listen to or download it. Users can upload music which is then available for all other users in the network to listen to, make playlists with (public or private), download, etc - all via the streaming platform. The services and all data (audio and beyond) is self hosted by a machine in my apartment and operates mostly independently from cloud infrastructure, so please excuse any slowness or other issues!</p>
         <p>To listen to music on lostless.cafe you can login at <a href="https://lostless.cafe/">https://lostless.cafe/</a>.</p>
         <p>To upload music to lostless.cafe you can login at <a href="https://upload.lostless.cafe/">https://upload.lostless.cafe/</a>.</p>
-        <p>Please consider joining the <a href="${process.env.DISCORD_INVITE}">Discord channel</a> for updates and to chat with the other users.</p>
+        <p>Please consider joining the <a href="https://discord.gg/${discordInvite}">Discord channel</a> for updates and to chat with the other users.</p>
         <p>Both the upload and streaming pages should be pretty self explanatory, but If you get lost or have any questions let me know!</p>
         <p>You can also access the streaming portion on mobile (or desktop for that matter) from an App. Any <a href="https://subsonic.org/pages/apps.jsp">listed here</a> will work. All you have to do is download the app, and then add the streaming url and your user credentials to it and you should be good to go. Personally, I have play:Sub setup on my iPhone and it works very nicely.</p>
         <p>This is a completely new project and I'm completely open to any feedback you might have, so please do not hesitate to reach out with ideas, critiques, or really any thoughts at all.</p>

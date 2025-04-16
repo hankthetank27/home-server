@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/css/styles.css">
+  <title>lostless.cafe signup</title>
+</head>
+<div>
+  <div class="container-welcome">
+    <div>
+      <div class="center">
+        <h2>Hi and welcome to lostless.cafe!</h2>
+      <div/>
+      <p>lostless.cafe is a small, privately hosted music streaming and file sharing network for some friends to share cool music they like and have an easy way to listen to or download it. Users can upload music which is then available for all other users in the network to listen to, make playlists with (public or private), download, etc - all via the streaming platform. The services and all data (audio and beyond) is self hosted by a machine in my apartment and operates mostly independently from cloud infrastructure, so please excuse any slowness or other issues!</p>
+      <p>To listen to music on lostless.cafe you can login at <a href="https://lostless.cafe/">https://lostless.cafe/</a>.</p>
+      <p>To upload music to lostless.cafe you can login at <a href="https://upload.lostless.cafe/">https://upload.lostless.cafe/</a>.</p>
+      <p>Please consider joining the <a href="#" onclick="goToDiscordLink()">Discord channel</a> for updates and to chat with the other users.</p>
+      <p>You can also access the streaming portion on mobile (or desktop for that matter) from an App. Any <a href="https://subsonic.org/pages/apps.jsp">listed here</a> will work. All you have to do is download the app, and then add the streaming url and your user credentials to it and you should be good to go. Personally, I have play:Sub setup on my iPhone and it works very nicely.</p>
+      <p>This is a completely new project and I'm completely open to any feedback you might have, so please do not hesitate to reach out with ideas, critiques, or really any thoughts at all.</p>
+      <hr/>
+      <div class="center">
+        <h3>Some points and guidelines</h3>
+      </div>
+      <div class="center">
+        <h4>Uploading</h4>
+      </div>
+      <p><strong>All uploads must contain at LEAST Artist, Title, and Album metadata!</strong> Any files that do not contain this information, are detected and automatically deleted! This is a minimum requirement, and if you could please include things like album artwork as well that would be very much appreciated.</p>
+      <p>The server has a limited amount of disk space (14tb at the time of writing this), and I spent a long time deliberating how to maximize the usage of it without sacrificing too much audio quality on uploads. I figured that the most effective way of dealing with this problem is to have any lossless files automatically be compressed to a .flac file, so this is what happens. Flac has the nice property of compressing to about half as much space as other lossless file types without degrading the quality or losing any information in the process. I know people find flac annoying because it's not widely supported. Sorry, this is just the best I could come up with for now and you can always unpack flacs into a .aiff or whatever.</p>
+      <div class="center">
+        <h4>Streaming</h4>
+      </div>
+      <p>When making public playlists, consider prefixing the title of it with your username! You don't need to, but there is no way for users to see others' activity (or who "owns" a playlist), so if you care about anyone knowing you made the playlist you should put your name in it.</p>
+      <hr/>
+      <br/>
+      <div class="center-row">
+        <a class="large" href="https://lostless.cafe/">LISTEN</a>
+        <div class="large">&ensp;&ensp;&ensp;|&ensp;&ensp;&ensp;</div>
+        <a class="large" href="https://upload.lostless.cafe/">UPLOAD</a>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+  function goToDiscordLink() {
+    const pathParts = window.location.pathname.split('/');
+    const discordInvite = pathParts[pathParts.length - 1];
+    if (discordInvite) {
+      window.location.href = `https://discord.gg/${discordInvite}`;
+    } else {
+      alert("Sorry, no Discord invite link is available. Please contact the administrator.");
+    }
+    return false;
+  }
+</script>

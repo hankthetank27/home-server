@@ -1,4 +1,5 @@
 import { sendInviteEmail, sendWelcomeEmail } from './email.js';
+import { createServerInvite } from './discordInvite.js';
 import { 
   createNavidromeUser,
   navidromeLogin,
@@ -129,15 +130,21 @@ export const handlers = {
         }
       }
 
+      const discInvite = await createServerInvite(
+        process.env.DISCORD_CHANNEL_ID,
+        process.env.DISCORD_INVITE_BOT_TOKEN,
+      );
+
       if (token) {
         const emailAddr = await getTokenEmail(token);
-        await sendWelcomeEmail(emailAddr);
+        await sendWelcomeEmail(emailAddr, discInvite);
         await markInviteAsUsed(token);
       }
 
       res.json({ 
         success: "complete",
-        url: process.env.NAVIDROME_HOST,
+        url: process.env.APP_URL,
+        discInvite,
       });
     } catch (error) {
       console.error("Error creating account: ", error);
