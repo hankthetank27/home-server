@@ -25,8 +25,9 @@ export async function sendInviteEmail(email, token) {
         <p><a href="${inviteUrl}">Create your account</a></p>
         <p>Cheers,</p>
         <p>Hank</p>
+        <img src="https://signup.lostless.cafe/welcome.png" style="width: 180px;">
       </div>
-    `
+    `,
   };
   try {
     const info = await transporter.sendMail(mailOptions);
