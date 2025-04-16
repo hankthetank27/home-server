@@ -53,6 +53,7 @@ rec {
           depends_on:
            - navidrome
            - filebrowser
+           - invite-service
     '';
 
   mkComposeFile =
@@ -94,9 +95,34 @@ rec {
                 - web-${type}
               ports:
                 - ${if type == "prod" then "8081" else "8082"}:80
+            invite-service:
+              image: invite-service
+              container_name: invite-service-${type}
+              restart: unless-stopped
+              environment:
+                - APP_URL=''${APP_URL}
+                - FILEBROWSER_HOST=''${FILEBROWSER_HOST}
+                - NAVIDROME_HOST=''${NAVIDROME_HOST}
+                - EMAIL_APP_PASSWORD=''${EMAIL_APP_PASSWORD}
+                - EMAIL_USER=''${EMAIL_USER}
+                - INVITE_GEN_PW=''${INVITE_GEN_PW}
+                - ADMIN_PW=''${ADMIN_PW}
+                - ADMIN_UN=''${ADMIN_UN}
+              ports:
+                - ${if type == "prod" then "3002" else "3001"}:3000
+              volumes:
+                - invite-data:/usr/src/app/data
+              networks:
+                - web-${type}
+
           networks:
             web-${type}:
               external: false
+
+          volumes:
+            invite-data:
+              name: invite-data
         '';
+
     };
 }

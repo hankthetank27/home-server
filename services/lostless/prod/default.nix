@@ -1,13 +1,14 @@
 {
   type,
   filebrowserSha,
+  withCloudflared,
   pkgs,
   ...
 }:
 let
   utils = import ../../../utils/default.nix { inherit pkgs; };
 in
-{
+rec {
   filebrowserDockerfile = pkgs.dockerTools.buildImage {
     name = "filebrowser-custom-${type}";
     tag = "latest";
@@ -36,6 +37,25 @@ in
     };
   };
 
+  cloudflared =
+    # extra indent needed below for correct string formatting
+    # yaml
+    ''
+      cloudflared-tunnel:
+          image: cloudflare/cloudflared:latest
+          container_name: cloudflared-tunnel-${type}
+          restart: unless-stopped
+          environment:
+           - TUNNEL_TOKEN=''${TUNNEL_TOKEN}
+          command: tunnel run
+          networks:
+            - web-${type}
+          depends_on:
+           - navidrome
+           - filebrowser
+           - invite-service
+    '';
+
   mkComposeFile =
     appStorage:
     pkgs.writeTextFile {
@@ -44,6 +64,7 @@ in
         #yaml
         ''
           services:
+            ${if withCloudflared then cloudflared else ""}
             navidrome:
               image: deluan/navidrome:latest
               container_name: navidrome-${type}
@@ -74,21 +95,34 @@ in
                 - web-${type}
               ports:
                 - ${if type == "prod" then "8081" else "8082"}:80
-            cloudflared-tunnel:
-              image: cloudflare/cloudflared:latest
-              container_name: cloudflared-tunnel-${type}
+            invite-service:
+              image: invite-service
+              container_name: invite-service-${type}
               restart: unless-stopped
               environment:
-               - TUNNEL_TOKEN=''${TUNNEL_TOKEN}
-              command: tunnel run
+                - APP_URL=''${APP_URL}
+                - FILEBROWSER_HOST=''${FILEBROWSER_HOST}
+                - NAVIDROME_HOST=''${NAVIDROME_HOST}
+                - EMAIL_APP_PASSWORD=''${EMAIL_APP_PASSWORD}
+                - EMAIL_USER=''${EMAIL_USER}
+                - INVITE_GEN_PW=''${INVITE_GEN_PW}
+                - ADMIN_PW=''${ADMIN_PW}
+                - ADMIN_UN=''${ADMIN_UN}
+              ports:
+                - ${if type == "prod" then "3002" else "3001"}:3000
+              volumes:
+                - invite-data:/usr/src/app/data
               networks:
                 - web-${type}
-              depends_on:
-               - navidrome
-               - filebrowser
+
           networks:
             web-${type}:
               external: false
+
+          volumes:
+            invite-data:
+              name: invite-data
         '';
+
     };
 }
