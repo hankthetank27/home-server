@@ -135,7 +135,10 @@ export const handlers = {
         await markInviteAsUsed(token);
       }
 
-      res.json({ success: "complete" });
+      res.json({ 
+        success: "complete",
+        url: process.env.NAVIDROME_HOST,
+      });
     } catch (error) {
       console.error("Error creating account: ", error);
       res.status(500).json({

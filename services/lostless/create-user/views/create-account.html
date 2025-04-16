@@ -16,6 +16,8 @@
     <div id="invalidInvite" class="invalid-invite">
       <h2>Invalid Invitation</h2>
       <p id="invalidMessage">This invitation link is invalid or has already been used.</p>
+      <br/>
+      <a href="https://lostless.cafe">Login</a>
     </div>
     
     <div id="accountForm" style="display: none;">
@@ -167,8 +169,11 @@
         resultElement.className = 'result';
         
         if (data.success === "complete") {
-          resultElement.innerHTML = `<div>Account created successfully!<br/><br/>Please check your email for more information.<br/><br/>You can also login at <a href="https://lostless.cafe">lostless.cafe</a></div>`;
+          resultElement.innerHTML = `<div>Account created successfully!<br/><br/>Please check your email for more information.<br/><br/>Redirecting to <a href="https://lostless.cafe">lostless.cafe</a>...</div>`;
           resultElement.classList.add('success');
+          setTimeout(() => {
+            window.location.href = data.url;
+          }, 1500);
         } else if (data.success === "partial") {
           resultElement.textContent = "Account partially created. If you have trouble logging in try and recreate your account or reach out to an admin for help.";
           resultElement.classList.add('success');
