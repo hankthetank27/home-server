@@ -115,18 +115,16 @@ export const handlers = {
 
       if (navidromeUserRes.status !== 200 || filebrowserUserRes.status !== 201) {
         if (navidromeUserRes.data?.errors?.userName === 'ra.validation.unique' 
-          && filebrowserUserRes.status === 500
-        ) {
-          return res.status(400).json({
-            success: "failure",
-            message: 'Username already exists. Please try a different username.'
-          });
-        } else if (navidromeUserRes.data?.errors?.userName === 'ra.validation.unique'
           || filebrowserUserRes.status === 500
         ) {
-          return res.json({ success: "partial" });
+          return res.status(400).json({
+            success: false,
+            message: 'Username already exists. Please try a different username.'
+          });
         } else {
-          throw new Error();
+          throw new Error(
+            `Error creating account: filebrowser status: ${filebrowserUserRes.status}, navidrome status: ${navidromeUserRes.status}`
+          );
         }
       }
 
@@ -142,7 +140,7 @@ export const handlers = {
       }
 
       res.json({ 
-        success: "complete",
+        success: true,
         url: process.env.APP_URL,
         discInvite,
       });
