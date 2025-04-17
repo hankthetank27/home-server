@@ -114,7 +114,7 @@ rec {
               ports:
                 - ${if type == "prod" then "3002" else "3001"}:3000
               volumes:
-                - invite-data:/usr/src/app/data
+                - invite-data:/usr/src/app/invite-data
               networks:
                 - web-${type}
 
