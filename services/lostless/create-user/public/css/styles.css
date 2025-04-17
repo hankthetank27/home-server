@@ -13,10 +13,6 @@ body {
   background-attachment: fixed;
 }
 
-.body-container {
-
-}
-
 .container {
   top: 10%;
   background-color: white;
@@ -26,6 +22,10 @@ body {
   width: 100%;
   max-width: 300px;
   position: relative;
+}
+
+#welcome-img{
+  height: 650px;
 }
 
 .center {
@@ -169,6 +169,10 @@ button:hover {
     padding: 1.25rem;
     margin-top: 1rem;
   }
+
+  #welcome-img{
+    height: 400px;
+  }
   
   h2 {
     font-size: 1.3rem;
@@ -192,5 +196,9 @@ button:hover {
   .result {
     font-size: 0.9rem;
     padding: 0.75rem;
+  }
+  
+  .large {
+    font-size: 20px;
   }
 }

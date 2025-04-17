@@ -49,6 +49,7 @@ export async function sendWelcomeEmail(email, discordInvite) {
     html: `
       <div>
         <h3>Hi and welcome to lostless.cafe!</h3>
+        <img id="welcome-img" src="https://signup.lostless.cafe/lostless-cafe-cutout.png" style="height: 500px;">
         <p>lostless.cafe is a small, privately hosted music streaming and file sharing network for some friends to share cool music they like and have an easy way to listen to or download it. Users can upload music which is then available for all other users in the network to listen to, make playlists with (public or private), download, etc - all via the streaming platform. The services and all data (audio and beyond) is self hosted by a machine in my apartment and operates mostly independently from cloud infrastructure, so please excuse any slowness or other issues!</p>
         <p>To listen to music on lostless.cafe you can login at <a href="https://lostless.cafe/">https://lostless.cafe/</a>.</p>
         <p>To upload music to lostless.cafe you can login at <a href="https://upload.lostless.cafe/">https://upload.lostless.cafe/</a>.</p>
