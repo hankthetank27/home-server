@@ -21,24 +21,107 @@
         <input type="password" id="password" name="password" required>
       </div>
       
+      <div class="form-group checkbox-group">
+        <input type="checkbox" id="sendEmail" name="sendEmail" checked>
+        <label for="sendEmail">Send email notification</label>
+      </div>
+      
       <button type="submit">Send Invitation</button>
     </form>
     
     <div id="successMessage" class="message success">
-      Invitation sent successfully!
+      <p>Invitation generated successfully!</p>
+      <br/>
+      <p id="emailStatus"></p>
+      <div id="linkContainer">
+        <div class="link-header">
+          <p>Invitation Link:</p>
+          <button id="copyLinkBtn" title="Copy to clipboard">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+            </svg>
+          </button>
+        </div>
+        <a id="inviteLink" href="#" target="_blank"></a>
+      </div>
     </div>
     
     <div id="errorMessage" class="message error">
       Error sending invitation.
     </div>
   </div>
-
+  <style>
+    #linkContainer {
+      margin-top: 10px;
+      position: relative;
+    }
+    .link-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 5px;
+    }
+    .link-header p {
+      margin: 0;
+    }
+    #copyLinkBtn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 4px;
+      border-radius: 4px;
+    }
+    #copyLinkBtn:hover {
+      background-color: #e9e9e9;
+    }
+    #copyLinkBtn svg {
+      color: #555;
+    }
+    #inviteLink {
+      display: block;
+      padding: 8px;
+      background-color: #f5f5f5;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-family: monospace;
+      word-break: break-all;
+      text-decoration: none;
+      color: #0066cc;
+    }
+    #inviteLink:hover {
+      background-color: #e9e9e9;
+      text-decoration: underline;
+    }
+    #successMessage p {
+      margin: 5px 0;
+    }
+    .copy-tooltip {
+      position: absolute;
+      top: 30px;
+      right: 0;
+      background-color: #333;
+      color: white;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .copy-tooltip.visible {
+      opacity: 1;
+    }
+  </style>
   <script>
     document.getElementById('inviteForm').addEventListener('submit', async (e) => {
       e.preventDefault();
       
       const email = document.getElementById('email').value;
       const password = document.getElementById('password').value;
+      const sendEmail = document.getElementById('sendEmail').checked;
       
       const successMessage = document.getElementById('successMessage');
       const errorMessage = document.getElementById('errorMessage');
@@ -52,14 +135,30 @@
           headers: {
             'Content-Type': 'application/json'
           },
-          body: JSON.stringify({ email, password })
+          body: JSON.stringify({ email, password, sendEmail })
         });
         
         const data = await response.json();
         
-        if (data.success === 'complete') {
+        if (data.success) {
+          const currentUrl = window.location.href;
+          const baseUrl = currentUrl.replace(/\/generate.*$/, '');
+          const inviteUrl = `${baseUrl}/invite/${data.token}`;
+          
+          const inviteLinkElement = document.getElementById('inviteLink');
+          inviteLinkElement.href = inviteUrl;
+          inviteLinkElement.textContent = inviteUrl;
+          
+          const emailStatusElement = document.getElementById('emailStatus');
+          if (data.emailSent) {
+            emailStatusElement.textContent = 'Email notification was sent successfully.';
+          } else {
+            emailStatusElement.textContent = 'No email notification was sent.';
+          }
+          
           successMessage.style.display = 'block';
           document.getElementById('inviteForm').reset();
+          document.getElementById('sendEmail').checked = true;
         } else {
           errorMessage.textContent = data.message || 'Error sending invitation.';
           errorMessage.style.display = 'block';
@@ -69,6 +168,38 @@
         errorMessage.textContent = 'An unexpected error occurred. Please try again.';
         errorMessage.style.display = 'block';
       }
+    });
+    
+    document.addEventListener('DOMContentLoaded', () => {
+      const copyButton = document.getElementById('copyLinkBtn');
+      
+      copyButton.addEventListener('click', () => {
+        const inviteLink = document.getElementById('inviteLink').href;
+        
+        let tooltip = document.querySelector('.copy-tooltip');
+        if (!tooltip) {
+          tooltip = document.createElement('div');
+          tooltip.className = 'copy-tooltip';
+          document.getElementById('linkContainer').appendChild(tooltip);
+        }
+        
+        navigator.clipboard.writeText(inviteLink)
+          .then(() => {
+            tooltip.textContent = 'Copied!';
+            tooltip.classList.add('visible');
+            setTimeout(() => {
+              tooltip.classList.remove('visible');
+            }, 2000);
+          })
+          .catch(err => {
+            tooltip.textContent = 'Failed to copy';
+            tooltip.classList.add('visible');
+            setTimeout(() => {
+              tooltip.classList.remove('visible');
+            }, 2000);
+            console.error('Could not copy text: ', err);
+          });
+      });
     });
   </script>
 </body>

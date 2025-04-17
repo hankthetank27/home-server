@@ -15,7 +15,7 @@ import {
 
 export const handlers = {
   generateInvite: async (req, res) => {
-    const { email, password } = req.body;
+    const { email, password, sendEmail } = req.body;
 
     if (password !== process.env.INVITE_GEN_PW) {
       return res.status(400).json({
@@ -27,9 +27,15 @@ export const handlers = {
     try {
       const token = await createInvite(email);
 
-      await sendInviteEmail(email, token);
+      if (sendEmail) {
+        await sendInviteEmail(email, token);
+      }
 
-      res.json({ success: "complete" });
+      res.json({ 
+        emailSent: sendEmail,
+        success: true,
+        token 
+      });
     } catch (error) {
       console.error('Error generating invite:', error);
       res.status(500).json({
